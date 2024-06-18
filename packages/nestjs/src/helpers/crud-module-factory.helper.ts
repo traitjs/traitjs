@@ -10,7 +10,6 @@ const mergeOptions = <TOptions extends any, TFeature extends IFeature<any>>(
   options: IFeatureOptions<TFeature> & TOptions
 ): IFeatureOptions<TFeature> & TOptions => {
   return {
-    ...defaultOptions,
     ...options,
     features: [
       ...(defaultOptions.features ?? []),
@@ -38,15 +37,18 @@ export const crudModuleFactory =
         acc.controllers!.concat(
           defaultOptions.controllers
             ?.map((x) => features[x])
+            ?.filter((x) => x)
             .map((x) => x.useClass) ?? []
         );
 
         acc.providers!.concat(
-          defaultOptions.providers?.map((x) => features[x]) ?? []
+          defaultOptions.providers?.map((x) => features[x])?.filter((x) => x) ??
+            []
         );
 
         acc.exports!.concat(
-          defaultOptions.exports?.map((x) => features[x]) ?? []
+          defaultOptions.exports?.map((x) => features[x])?.filter((x) => x) ??
+            []
         );
 
         return acc;

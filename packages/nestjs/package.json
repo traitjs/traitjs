@@ -1,9 +1,13 @@
 {
   "name": "@traitjs/nestjs",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/traitjs/traitjs"
+  },
   "dependencies": {
     "@nestjs/common": "^10.3.8",
     "@nestjs/core": "^10.3.8",

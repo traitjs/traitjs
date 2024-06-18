@@ -1,9 +1,13 @@
 {
   "name": "@traitjs/core",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/traitjs/traitjs"
+  },
   "devDependencies": {},
   "scripts": {
     "compile": "rm -rf dist/* && tsc -p tsconfig.pkg.json",

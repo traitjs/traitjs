@@ -6,7 +6,7 @@ import { IProvideFeatureAs } from "../types/i-provide-feature-as";
 
 export const compileFeatures = <
   TOptions extends any,
-  TFeature extends IFeature<any>,
+  TFeature extends IFeature<TOptions>,
 >(
   provideFeatureAs: IProvideFeatureAs<TOptions, TFeature>,
   features: TFeature[],

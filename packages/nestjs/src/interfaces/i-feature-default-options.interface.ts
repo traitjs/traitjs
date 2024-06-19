@@ -3,7 +3,7 @@ import { IFeature } from "../types/i-feature.type";
 
 export interface IFeatureDefaultOptions<
   TOptions extends any,
-  TFeature extends IFeature<any>,
+  TFeature extends IFeature<TOptions>,
 > {
   features?: TFeature[];
   options?: Partial<TOptions>;

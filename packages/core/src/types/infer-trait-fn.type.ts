@@ -1,6 +1,6 @@
-import { Type } from "@nestjs/common";
-import { TraitUnionType } from "./trait-union.type";
 import { ITrait } from "../interfaces/i-trait.interface";
+import { TraitUnionType } from "./trait-union.type";
+import { Type } from "./type.type";
 
 export type InferTraitFnType<
   TOptions,

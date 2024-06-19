@@ -1,6 +1,6 @@
 import { ITrait } from "../interfaces/i-trait.interface";
 
-export const isDependentOn = <TOptions>(
+export const isDependentOn = <TOptions extends any>(
   a: ITrait<TOptions>,
   b: ITrait<TOptions>
 ): boolean => {

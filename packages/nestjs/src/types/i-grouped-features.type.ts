@@ -3,7 +3,7 @@ import { IFeature } from "./i-feature.type";
 
 export type IGroupedFeatures<
   TOptions extends any,
-  TFeature extends IFeature<any>,
+  TFeature extends IFeature<TOptions>,
 > = {
   [key in keyof TFeature]: ITrait<TOptions>[];
 };

@@ -1,7 +1,8 @@
 import { ITrait } from "../interfaces/i-trait.interface";
+import { Type } from "../types/type.type";
 
 export const resolveTraits = <TOptions>(
-  target: any,
+  target: Type<any>,
   traits: ITrait<TOptions>[],
   options: TOptions
 ) =>

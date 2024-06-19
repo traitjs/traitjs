@@ -1,9 +1,9 @@
-import { Type } from "@nestjs/common";
+import { Type } from "../types/type.type";
 import { InferTraitFnType } from "../types/infer-trait-fn.type";
 import { ITrait } from "../interfaces/i-trait.interface";
 
 export const makeTrait = <
-  TOptions,
+  TOptions extends any,
   TResult extends Type<any>,
   TDependsOn extends Array<ITrait<TOptions>> | [] = [],
 >(

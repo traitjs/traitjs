@@ -4,23 +4,26 @@ import { IFeatureModuleOptions } from "../interfaces/i-feature-module-options.in
 import { IFeatureOptions } from "../interfaces/i-feature-options.interface";
 import { IFeature } from "../types/i-feature.type";
 import { compileFeatures } from "./compile-features.helper";
+import merge from "lodash.merge";
 
-const mergeOptions = <TOptions extends any, TFeature extends IFeature<any>>(
+const mergeOptions = <
+  TOptions extends any,
+  TFeature extends IFeature<TOptions>,
+>(
   defaultOptions: IFeatureDefaultOptions<TOptions, TFeature>,
   options: IFeatureOptions<TFeature> & TOptions
 ): IFeatureOptions<TFeature> & TOptions => {
   return {
-    ...options,
+    ...merge(defaultOptions ?? {}, options),
     features: [
       ...(defaultOptions.features ?? []),
       ...(options?.features ?? []),
     ],
-    options: { ...(defaultOptions.options ?? {}), ...options },
   };
 };
 
 export const crudModuleFactory =
-  <TOptions extends any, TFeature extends IFeature<any>>(
+  <TOptions extends any, TFeature extends IFeature<TOptions>>(
     defaultOptions: IFeatureDefaultOptions<TOptions, TFeature>
   ) =>
   (optionsCollection: IFeatureModuleOptions<TOptions, TFeature>) => {

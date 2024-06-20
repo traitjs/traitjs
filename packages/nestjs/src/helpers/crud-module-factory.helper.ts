@@ -14,7 +14,7 @@ const mergeOptions = <
   options: IFeatureOptions<TFeature> & TOptions
 ): IFeatureOptions<TFeature> & TOptions => {
   return {
-    ...merge(defaultOptions ?? {}, options),
+    ...merge(options, defaultOptions.options ?? {}),
     features: [
       ...(defaultOptions.features ?? []),
       ...(options?.features ?? []),

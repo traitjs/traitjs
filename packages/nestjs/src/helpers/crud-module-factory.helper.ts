@@ -1,4 +1,4 @@
-import { Module, ModuleMetadata } from "@nestjs/common";
+import { Module, ModuleMetadata, applyDecorators } from "@nestjs/common";
 import { IFeatureDefaultOptions } from "../interfaces/i-feature-default-options.interface";
 import { IFeatureModuleOptions } from "../interfaces/i-feature-module-options.interface";
 import { IFeatureOptions } from "../interfaces/i-feature-options.interface";
@@ -24,7 +24,8 @@ const mergeOptions = <
 
 export const crudModuleFactory =
   <TOptions extends any, TFeature extends IFeature<TOptions>>(
-    defaultOptions: IFeatureDefaultOptions<TOptions, TFeature>
+    defaultOptions: IFeatureDefaultOptions<TOptions, TFeature>,
+    ...decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator>
   ) =>
   (optionsCollection: IFeatureModuleOptions<TOptions, TFeature>) => {
     if (defaultOptions.optionsTransform) {
@@ -68,19 +69,22 @@ export const crudModuleFactory =
       } as ModuleMetadata
     );
 
-    return Module({
-      imports: optionsCollection.imports,
-      controllers: [
-        ...modulesMetadata.controllers!,
-        ...(optionsCollection.controllers ?? []),
-      ],
-      providers: [
-        ...modulesMetadata.providers!,
-        ...(optionsCollection.providers ?? []),
-      ],
-      exports: [
-        ...modulesMetadata.exports!,
-        ...(optionsCollection.exports ?? []),
-      ],
-    });
+    return applyDecorators(
+      ...decorators,
+      Module({
+        imports: optionsCollection.imports,
+        controllers: [
+          ...modulesMetadata.controllers!,
+          ...(optionsCollection.controllers ?? []),
+        ],
+        providers: [
+          ...modulesMetadata.providers!,
+          ...(optionsCollection.providers ?? []),
+        ],
+        exports: [
+          ...modulesMetadata.exports!,
+          ...(optionsCollection.exports ?? []),
+        ],
+      })
+    );
   };

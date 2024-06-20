@@ -27,6 +27,9 @@ export const crudModuleFactory =
     defaultOptions: IFeatureDefaultOptions<TOptions, TFeature>
   ) =>
   (optionsCollection: IFeatureModuleOptions<TOptions, TFeature>) => {
+    if (defaultOptions.optionsTransform) {
+      optionsCollection = defaultOptions.optionsTransform(optionsCollection);
+    }
     const modulesMetadata = optionsCollection.featureOptions.reduce(
       (acc, options) => {
         const mergedOptions = mergeOptions(defaultOptions, options);
@@ -37,21 +40,23 @@ export const crudModuleFactory =
           mergedOptions.ignoreTraits
         );
 
-        acc.controllers!.concat(
-          defaultOptions.controllers
+        acc.controllers!.push(
+          ...(defaultOptions.controllers
             ?.map((x) => features[x])
             ?.filter((x) => x)
-            .map((x) => x.useClass) ?? []
+            .map((x) => x.useClass) ?? [])
         );
 
-        acc.providers!.concat(
-          defaultOptions.providers?.map((x) => features[x])?.filter((x) => x) ??
-            []
+        acc.providers!.push(
+          ...(defaultOptions.providers
+            ?.map((x) => features[x])
+            ?.filter((x) => x) ?? [])
         );
 
-        acc.exports!.concat(
-          defaultOptions.exports?.map((x) => features[x])?.filter((x) => x) ??
-            []
+        acc.exports!.push(
+          ...(defaultOptions.exports
+            ?.map((x) => features[x])
+            ?.filter((x) => x) ?? [])
         );
 
         return acc;

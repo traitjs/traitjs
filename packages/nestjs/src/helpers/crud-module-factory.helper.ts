@@ -5,6 +5,7 @@ import { IFeatureOptions } from "../interfaces/i-feature-options.interface";
 import { IFeature } from "../types/i-feature.type";
 import { compileFeatures } from "./compile-features.helper";
 import merge from "lodash.merge";
+import cloneDeep from "lodash.clonedeep";
 
 const mergeOptions = <
   TOptions extends any,
@@ -14,7 +15,7 @@ const mergeOptions = <
   options: IFeatureOptions<TFeature> & TOptions
 ): IFeatureOptions<TFeature> & TOptions => {
   return {
-    ...merge(options, defaultOptions.options ?? {}),
+    ...merge(cloneDeep(defaultOptions.options ?? {}), options),
     features: [
       ...(defaultOptions.features ?? []),
       ...(options?.features ?? []),

@@ -22,7 +22,7 @@ const buildFeatures = <
       [options.overrideTraits],
       mergedOptions,
       options.ignoreTraits
-    )[0];
+    );
     options.ignoreTraits = [
       ...(options.ignoreTraits ?? []),
       ...Object.keys(options.overrideTraits),

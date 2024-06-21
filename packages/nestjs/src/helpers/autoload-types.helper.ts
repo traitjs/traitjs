@@ -4,8 +4,13 @@ export interface AutoloadOptions extends ListFilesOptions {
   selector?: (imported: unknown) => boolean;
 }
 
-export const autoloadTypes = (path: string, options?: AutoloadOptions): any[] =>
+export const autoloadTypes = (
+  path: string,
+  {
+    selector = (loadedFeat) => loadedFeat instanceof Function,
+    ...options
+  }: AutoloadOptions = {}
+): any[] =>
   listFiles(path, options)
     .flatMap((file) => Object.values<any>(require(file)))
-    .filter((loadedFeat) => loadedFeat instanceof Function)
-    .filter((loadedFeat) => !options?.selector || options.selector(loadedFeat));
+    .filter((loadedFeat) => !selector || selector(loadedFeat));

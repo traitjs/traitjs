@@ -1,4 +1,4 @@
-import { Module, ModuleMetadata, applyDecorators } from "@nestjs/common";
+import { Module, ModuleMetadata, Type, applyDecorators } from "@nestjs/common";
 import { IFeatureDefaultOptions } from "../interfaces/i-feature-default-options.interface";
 import { IFeatureModuleOptions } from "../interfaces/i-feature-module-options.interface";
 import { IFeatureOptions } from "../interfaces/i-feature-options.interface";
@@ -116,9 +116,16 @@ export const crudModuleFactory =
       ],
     };
 
-    if (defaultOptions?.moduleTransform) {
-      moduleMetadata = defaultOptions.moduleTransform(moduleMetadata);
-    }
-
-    return applyDecorators(...decorators, Module(moduleMetadata));
+    return applyDecorators(
+      ...decorators,
+      <TFunction extends Function>(constructor: TFunction) => {
+        if (defaultOptions?.moduleTransform) {
+          moduleMetadata = defaultOptions.moduleTransform(
+            constructor,
+            moduleMetadata
+          );
+        }
+        Module(moduleMetadata)(constructor);
+      }
+    );
   };

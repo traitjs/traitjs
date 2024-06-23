@@ -100,22 +100,25 @@ export const crudModuleFactory =
       } as ModuleMetadata
     );
 
-    return applyDecorators(
-      ...decorators,
-      Module({
-        imports: optionsCollection.imports,
-        controllers: [
-          ...modulesMetadata.controllers!,
-          ...(optionsCollection.controllers ?? []),
-        ],
-        providers: [
-          ...modulesMetadata.providers!,
-          ...(optionsCollection.providers ?? []),
-        ],
-        exports: [
-          ...modulesMetadata.exports!,
-          ...(optionsCollection.exports ?? []),
-        ],
-      })
-    );
+    let moduleMetadata: ModuleMetadata = {
+      imports: optionsCollection.imports,
+      controllers: [
+        ...modulesMetadata.controllers!,
+        ...(optionsCollection.controllers ?? []),
+      ],
+      providers: [
+        ...modulesMetadata.providers!,
+        ...(optionsCollection.providers ?? []),
+      ],
+      exports: [
+        ...modulesMetadata.exports!,
+        ...(optionsCollection.exports ?? []),
+      ],
+    };
+
+    if (defaultOptions?.moduleTransform) {
+      moduleMetadata = defaultOptions.moduleTransform(moduleMetadata);
+    }
+
+    return applyDecorators(...decorators, Module(moduleMetadata));
   };

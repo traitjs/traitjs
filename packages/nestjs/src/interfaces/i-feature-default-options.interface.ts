@@ -1,6 +1,7 @@
 import { IProvideFeatureAs } from "../types/i-provide-feature-as";
 import { IFeature } from "../types/i-feature.type";
 import { IFeatureModuleOptions } from "./i-feature-module-options.interface";
+import { ModuleMetadata } from "@nestjs/common";
 
 export interface IFeatureDefaultOptions<
   TOptions extends any,
@@ -15,4 +16,5 @@ export interface IFeatureDefaultOptions<
   optionsTransform?: (
     options: IFeatureModuleOptions<TOptions, TFeature>
   ) => IFeatureModuleOptions<TOptions, TFeature>;
+  moduleTransform?: (options: ModuleMetadata) => ModuleMetadata;
 }

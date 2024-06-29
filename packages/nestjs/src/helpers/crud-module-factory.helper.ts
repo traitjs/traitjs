@@ -16,16 +16,16 @@ const buildFeatures = <
   mergedOptions: IFeatureOptions<TFeature> & TOptions
 ) => {
   let ovirridedFeatures = {};
-  if (options.overrideTraits) {
+  if (options.overrideFeatures) {
     ovirridedFeatures = compileFeatures<TOptions, TFeature>(
       defaultOptions.provideFeatureAs,
-      [options.overrideTraits],
+      options.overrideFeatures,
       mergedOptions,
       options.ignoreTraits
     );
     options.ignoreTraits = [
       ...(options.ignoreTraits ?? []),
-      ...Object.keys(options.overrideTraits),
+      ...Object.keys(options.overrideFeatures),
     ];
   }
   const features = compileFeatures<TOptions, TFeature>(

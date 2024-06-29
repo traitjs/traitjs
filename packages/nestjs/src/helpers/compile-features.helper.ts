@@ -3,10 +3,12 @@ import { IFeature } from "../types/i-feature.type";
 import { IFeatureResult } from "../types/i-feature-result.type";
 import { IGroupedFeatures } from "../types/i-grouped-features.type";
 import { IProvideFeatureAs } from "../types/i-provide-feature-as";
+import { featureEntries, groupedFeaturesEntries } from "./entries.helper";
 
 export const compileFeatures = <
   TOptions extends any,
-  TFeature extends IFeature<TOptions>,
+  TKey extends string,
+  TFeature extends IFeature<TOptions, TKey>,
 >(
   provideFeatureAs: IProvideFeatureAs<TOptions, TFeature>,
   features: TFeature[],
@@ -15,9 +17,10 @@ export const compileFeatures = <
 ): IFeatureResult<TFeature> => {
   const traits = features.reduce(
     (acc, feature) => {
-      Object.entries(feature)
+      featureEntries(feature)
         .filter(([key]) => !ignoreTraits?.includes(key))
-        .forEach(([key, value]: [keyof TFeature, ITrait<TOptions>]) => {
+        .forEach(([key, value]) => {
+          if (!value) return;
           if (!acc[key]) {
             acc[key] = [];
           }
@@ -27,14 +30,11 @@ export const compileFeatures = <
     },
     {} as IGroupedFeatures<TOptions, TFeature>
   );
-  return Object.entries(traits).reduce(
-    (acc, [key, value]: [keyof TFeature, ITrait<TOptions>[]]) => {
-      acc[key] = {
-        provide: provideFeatureAs[key]?.(options),
-        useClass: compileTraits(value, options),
-      };
-      return acc;
-    },
-    {} as IFeatureResult<TFeature>
-  );
+  return groupedFeaturesEntries(traits).reduce((acc, [key, value]) => {
+    acc[key] = {
+      provide: provideFeatureAs[key]?.(options),
+      useClass: compileTraits(value, options),
+    };
+    return acc;
+  }, {} as IFeatureResult<TFeature>);
 };

@@ -9,6 +9,7 @@ import cloneDeep from "lodash.clonedeep";
 
 const buildFeatures = <
   TOptions extends any,
+  TKey extends string,
   TFeature extends IFeature<TOptions>,
 >(
   options: IFeatureOptions<TFeature> & TOptions,
@@ -17,7 +18,7 @@ const buildFeatures = <
 ) => {
   let ovirridedFeatures = {};
   if (options.overrideFeatures) {
-    ovirridedFeatures = compileFeatures<TOptions, TFeature>(
+    ovirridedFeatures = compileFeatures<TOptions, TKey, TFeature>(
       defaultOptions.provideFeatureAs,
       options.overrideFeatures,
       mergedOptions,
@@ -28,7 +29,7 @@ const buildFeatures = <
       ...Object.keys(options.overrideFeatures),
     ];
   }
-  const features = compileFeatures<TOptions, TFeature>(
+  const features = compileFeatures<TOptions, TKey, TFeature>(
     defaultOptions.provideFeatureAs,
     mergedOptions.features ?? [],
     mergedOptions,
@@ -55,7 +56,11 @@ const mergeOptions = <
 };
 
 export const crudModuleFactory =
-  <TOptions extends any, TFeature extends IFeature<TOptions>>(
+  <
+    TOptions extends any,
+    TKey extends string,
+    TFeature extends IFeature<TOptions, TKey>,
+  >(
     defaultOptions: IFeatureDefaultOptions<TOptions, TFeature>,
     ...decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator>
   ) =>
@@ -66,11 +71,7 @@ export const crudModuleFactory =
     const modulesMetadata = optionsCollection.featureOptions.reduce(
       (acc, options) => {
         const mergedOptions = mergeOptions(defaultOptions, options);
-        const features = buildFeatures<TOptions, TFeature>(
-          options,
-          defaultOptions,
-          mergedOptions
-        );
+        const features = buildFeatures(options, defaultOptions, mergedOptions);
 
         acc.controllers!.push(
           ...(defaultOptions.controllers

@@ -1,4 +1,5 @@
 import { applyTraits } from "../src/helpers/apply-traits.helper";
+import { makeAbstractTrait } from "../src/helpers/make-abstract-trait.helper";
 import { makeTrait } from "../src/helpers/make-trait.helper";
 
 describe("applyTraits", () => {
@@ -19,16 +20,15 @@ describe("applyTraits", () => {
   });
 
   it("should have all functionalities from all traits", () => {
-    const trait1 = makeTrait(
-      (target, options) =>
-        class extends (target ?? Object) {
-          trait1 = 1;
-          traitfn1() {
-            return "traitfn1";
-          }
-        },
-      []
-    );
+    const trait1 = makeAbstractTrait((target, options) => {
+      abstract class Trait1 extends (target ?? Object) {
+        trait1 = 1;
+        traitfn1() {
+          return "traitfn1";
+        }
+      }
+      return Trait1;
+    }, []);
     const looseTrait = makeTrait((target, options: any) => {
       return class extends (target ?? Object) {
         looseTrait = -1;

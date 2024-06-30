@@ -1,9 +1,10 @@
+import { makeAbstractTrait } from "../src/helpers/make-abstract-trait.helper";
 import { makeTrait } from "../src/helpers/make-trait.helper";
 import { normalizeTraits } from "../src/helpers/normalize-traits.helper";
 
 describe("normalizeTraits", () => {
-  const noDependencyTrait = makeTrait((_, options: any) => {
-    return class {};
+  const noDependencyTrait = makeTrait((target, options: any) => {
+    return class extends (target ?? Object) {};
   }, []);
   const trait1 = makeTrait((_, options: any) => {
     return class {};
@@ -19,6 +20,14 @@ describe("normalizeTraits", () => {
       return class extends target {};
     },
     [trait2]
+  );
+  const noDependencyAbstractTrait = makeAbstractTrait(
+    (target) => class extends (target ?? Object) {},
+    []
+  );
+  const abstractTrait = makeAbstractTrait(
+    (target) => class extends (target ?? Object) {},
+    [noDependencyTrait]
   );
 
   it("is a function", () => {
@@ -51,6 +60,26 @@ describe("normalizeTraits", () => {
     expect(result).toEqual([noDependencyTrait, trait1, trait2, trait3]);
   });
 
+  it("sorts traits based on their dependencies and abstract traits", () => {
+    const result = normalizeTraits([
+      noDependencyAbstractTrait,
+      trait3,
+      trait1,
+      noDependencyTrait,
+      trait2,
+      abstractTrait,
+    ]);
+
+    expect(result).toEqual([
+      noDependencyAbstractTrait,
+      trait1,
+      noDependencyTrait,
+      abstractTrait,
+      trait2,
+      trait3,
+    ]);
+  });
+
   it("traits with no dependencies must be at the start of the array", () => {
     const result = normalizeTraits([trait3, trait1, trait2, noDependencyTrait]);
 
@@ -71,5 +100,10 @@ describe("normalizeTraits", () => {
     ]);
 
     expect(result).toEqual([trait1, noDependencyTrait, trait2, trait3]);
+  });
+
+  it("throws an error if the last trait is an abstract trait", () => {
+    const result = () => normalizeTraits([abstractTrait]);
+    expect(result).toThrow("The last trait in the list cannot be abstract");
   });
 });

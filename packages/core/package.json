@@ -1,6 +1,6 @@
 {
   "name": "@traitjs/core",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,12 +8,15 @@
     "type": "git",
     "url": "https://github.com/traitjs/traitjs"
   },
-  "devDependencies": {},
   "scripts": {
     "compile": "rm -rf dist/* && tsc -p tsconfig.pkg.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Arthur Frederico Neves",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/lodash.last": "^3.0.9",
+    "lodash.last": "^3.0.0"
+  }
 }

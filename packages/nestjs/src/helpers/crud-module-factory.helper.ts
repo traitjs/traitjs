@@ -65,13 +65,19 @@ export const crudModuleFactory =
     ...decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator>
   ) =>
   (optionsCollection: IFeatureModuleOptions<TOptions, TFeature>) => {
-    if (defaultOptions.optionsTransform) {
-      optionsCollection = defaultOptions.optionsTransform(optionsCollection);
-    }
+    optionsCollection =
+      defaultOptions.optionsTransform?.(optionsCollection) ?? optionsCollection;
     const modulesMetadata = optionsCollection.featureOptions.reduce(
       (acc, options) => {
         const mergedOptions = mergeOptions(defaultOptions, options);
-        const features = buildFeatures(options, defaultOptions, mergedOptions);
+        const featureResult = buildFeatures(
+          options,
+          defaultOptions,
+          mergedOptions
+        );
+        const features =
+          defaultOptions.featureResultTransform?.(featureResult) ??
+          featureResult;
 
         acc.controllers!.push(
           ...(defaultOptions.controllers
@@ -120,12 +126,9 @@ export const crudModuleFactory =
     return applyDecorators(
       ...decorators,
       <TFunction extends Function>(constructor: TFunction) => {
-        if (defaultOptions?.moduleTransform) {
-          moduleMetadata = defaultOptions.moduleTransform(
-            constructor,
-            moduleMetadata
-          );
-        }
+        moduleMetadata =
+          defaultOptions.moduleTransform?.(constructor, moduleMetadata) ??
+          moduleMetadata;
         Module(moduleMetadata)(constructor);
       }
     );

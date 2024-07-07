@@ -14,15 +14,14 @@ const buildFeatures = <
   TFeature extends IFeature<TOptions>,
 >(
   options: IFeatureOptions<TFeature> & TOptions,
-  defaultOptions: IFeatureDefaultOptions<TOptions, TFeature>,
-  mergedOptions: IFeatureOptions<TFeature> & TOptions
+  defaultOptions: IFeatureDefaultOptions<TOptions, TFeature>
 ) => {
   let overridedFeatures = {} as IFeatureResult<TFeature>;
   if (options.overrideFeatures) {
     overridedFeatures = compileFeatures<TOptions, TKey, TFeature>(
       defaultOptions.provideFeatureAs,
       options.overrideFeatures,
-      mergedOptions,
+      options,
       options.ignoreTraits
     );
     options.ignoreTraits = [
@@ -32,9 +31,9 @@ const buildFeatures = <
   }
   const features = compileFeatures<TOptions, TKey, TFeature>(
     defaultOptions.provideFeatureAs,
-    mergedOptions.features ?? [],
-    mergedOptions,
-    mergedOptions.ignoreTraits
+    options.features ?? [],
+    options,
+    options.ignoreTraits
   );
   merge(features, overridedFeatures);
   return features;
@@ -71,11 +70,7 @@ export const crudModuleFactory =
     const modulesMetadata = optionsCollection.featureOptions.reduce(
       (acc, options) => {
         const mergedOptions = mergeOptions(defaultOptions, options);
-        const featureResult = buildFeatures(
-          options,
-          defaultOptions,
-          mergedOptions
-        );
+        const featureResult = buildFeatures(mergedOptions, defaultOptions);
         const features =
           defaultOptions.featureResultTransform?.(
             featureResult,

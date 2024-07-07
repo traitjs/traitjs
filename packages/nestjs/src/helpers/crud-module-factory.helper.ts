@@ -76,8 +76,10 @@ export const crudModuleFactory =
           mergedOptions
         );
         const features =
-          defaultOptions.featureResultTransform?.(featureResult) ??
-          featureResult;
+          defaultOptions.featureResultTransform?.(
+            featureResult,
+            mergedOptions
+          ) ?? featureResult;
 
         acc.controllers!.push(
           ...(defaultOptions.controllers

@@ -1,4 +1,4 @@
-import { ClassProvider, Provider, Type } from "@nestjs/common";
+import { ClassProvider } from "@nestjs/common";
 import { IFeature } from "./i-feature.type";
 
 export type IFeatureResult<TFeature extends IFeature<any>> = {

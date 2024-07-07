@@ -6,6 +6,7 @@ import { IFeature } from "../types/i-feature.type";
 import { compileFeatures } from "./compile-features.helper";
 import merge from "lodash.merge";
 import cloneDeep from "lodash.clonedeep";
+import { IFeatureResult } from "../types/i-feature-result.type";
 
 const buildFeatures = <
   TOptions extends any,
@@ -16,9 +17,9 @@ const buildFeatures = <
   defaultOptions: IFeatureDefaultOptions<TOptions, TFeature>,
   mergedOptions: IFeatureOptions<TFeature> & TOptions
 ) => {
-  let ovirridedFeatures = {};
+  let overridedFeatures = {} as IFeatureResult<TFeature>;
   if (options.overrideFeatures) {
-    ovirridedFeatures = compileFeatures<TOptions, TKey, TFeature>(
+    overridedFeatures = compileFeatures<TOptions, TKey, TFeature>(
       defaultOptions.provideFeatureAs,
       options.overrideFeatures,
       mergedOptions,
@@ -26,7 +27,7 @@ const buildFeatures = <
     );
     options.ignoreTraits = [
       ...(options.ignoreTraits ?? []),
-      ...Object.keys(options.overrideFeatures),
+      ...Object.keys(overridedFeatures),
     ];
   }
   const features = compileFeatures<TOptions, TKey, TFeature>(
@@ -35,7 +36,7 @@ const buildFeatures = <
     mergedOptions,
     mergedOptions.ignoreTraits
   );
-  merge(features, ovirridedFeatures);
+  merge(features, overridedFeatures);
   return features;
 };
 

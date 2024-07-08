@@ -21,9 +21,7 @@ describe("makeAbstractTrait", () => {
 
   it("should correctly assign the dependsOn property", () => {
     const traitFn = () => class {};
-    const dependsOn: ITrait<any>[] = [
-      { traitFn: () => class {}, dependsOn: [], abstract: true },
-    ];
+    const dependsOn: ITrait<any>[] = [makeAbstractTrait(() => class {})];
     const result = makeAbstractTrait(traitFn, dependsOn);
 
     expect(result.dependsOn).toBe(dependsOn);

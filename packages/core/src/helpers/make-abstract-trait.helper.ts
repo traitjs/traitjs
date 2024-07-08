@@ -2,6 +2,7 @@ import { Type } from "../types/type.type";
 import { InferTraitFnType } from "../types/infer-trait-fn.type";
 import { ITrait } from "../interfaces/i-trait.interface";
 import { AbstractType } from "../types/abstract-type.type";
+import { makeRandomId } from "./make-random-id.helper";
 
 export const makeAbstractTrait = <
   TOptions extends any,
@@ -12,6 +13,7 @@ export const makeAbstractTrait = <
   dependsOn?: TDependsOn
 ) => {
   return {
+    uniqueId: makeRandomId(16),
     traitFn,
     dependsOn,
     abstract: true,

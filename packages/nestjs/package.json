@@ -1,6 +1,6 @@
 {
   "name": "@traitjs/nestjs",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
   "dependencies": {
     "@nestjs/common": "^10.3.8",
     "@nestjs/core": "^10.3.8",
-    "@traitjs/core": "^1.0.9",
+    "@traitjs/core": "^1.0.11",
     "@types/lodash.clonedeep": "^4.5.9",
     "@types/lodash.merge": "^4.6.9",
     "change-case": "^5.4.4",

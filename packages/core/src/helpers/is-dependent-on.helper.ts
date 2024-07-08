@@ -5,7 +5,7 @@ export const isDependentOn = <TOptions extends any>(
   b: ITrait<TOptions>
 ): boolean => {
   return (
-    (a.dependsOn?.includes(b) ?? false) ||
+    (a.dependsOn?.some((x) => x.uniqueId === b.uniqueId) ?? false) ||
     (a.dependsOn?.some((x) => isDependentOn(x, b)) ?? false)
   );
 };

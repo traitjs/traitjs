@@ -29,13 +29,26 @@ describe("normalizeTraits", () => {
     (target) => class extends (target ?? Object) {},
     [noDependencyTrait]
   );
+  const optionalTrait = makeTrait(
+    (_, options: any) => {
+      return class {};
+    },
+    [],
+    (options: any) => options.activate
+  );
+  const optionalDependentTrait = makeTrait(
+    (target, options: any) => {
+      return class extends target {};
+    },
+    [optionalTrait]
+  );
 
   it("is a function", () => {
     expect(typeof normalizeTraits).toBe("function");
   });
 
   it("returns an empty array if no traits are provided", () => {
-    const result = normalizeTraits([]);
+    const result = normalizeTraits([], {});
     expect(result).toEqual([]);
   });
 
@@ -44,31 +57,37 @@ describe("normalizeTraits", () => {
       return class {};
     }, []);
 
-    const result = normalizeTraits([trait]);
+    const result = normalizeTraits([trait], {});
     expect(result).toEqual([trait]);
   });
 
   it("adds all dependencies when only one trait is provided", () => {
-    const result = normalizeTraits([trait3]);
+    const result = normalizeTraits([trait3], {});
 
     expect(result).toEqual([trait1, trait2, trait3]);
   });
 
   it("sorts traits based on their dependencies", () => {
-    const result = normalizeTraits([noDependencyTrait, trait3, trait1, trait2]);
+    const result = normalizeTraits(
+      [noDependencyTrait, trait3, trait1, trait2],
+      {}
+    );
 
     expect(result).toEqual([noDependencyTrait, trait1, trait2, trait3]);
   });
 
   it("sorts traits based on their dependencies and abstract traits", () => {
-    const result = normalizeTraits([
-      noDependencyAbstractTrait,
-      trait3,
-      trait1,
-      noDependencyTrait,
-      trait2,
-      abstractTrait,
-    ]);
+    const result = normalizeTraits(
+      [
+        noDependencyAbstractTrait,
+        trait3,
+        trait1,
+        noDependencyTrait,
+        trait2,
+        abstractTrait,
+      ],
+      {}
+    );
 
     expect(result).toEqual([
       noDependencyAbstractTrait,
@@ -81,29 +100,47 @@ describe("normalizeTraits", () => {
   });
 
   it("traits with no dependencies must be at the start of the array", () => {
-    const result = normalizeTraits([trait3, trait1, trait2, noDependencyTrait]);
+    const result = normalizeTraits(
+      [trait3, trait1, trait2, noDependencyTrait],
+      {}
+    );
 
     expect(result).toEqual([trait1, noDependencyTrait, trait2, trait3]);
   });
 
   it("removes duplicate traits", () => {
-    const result = normalizeTraits([
-      trait3,
-      trait1,
-      noDependencyTrait,
-      trait3,
-      trait2,
-      trait1,
-      noDependencyTrait,
-      trait2,
-      trait3,
-    ]);
+    const result = normalizeTraits(
+      [
+        trait3,
+        trait1,
+        noDependencyTrait,
+        trait3,
+        trait2,
+        trait1,
+        noDependencyTrait,
+        trait2,
+        trait3,
+      ],
+      {}
+    );
 
     expect(result).toEqual([trait1, noDependencyTrait, trait2, trait3]);
   });
 
   it("throws an error if the last trait is an abstract trait", () => {
-    const result = () => normalizeTraits([abstractTrait]);
+    const result = () => normalizeTraits([abstractTrait], {});
     expect(result).toThrow("The last trait in the list cannot be abstract");
+  });
+
+  it("should ignore traits that are not activated", () => {
+    const result = normalizeTraits([optionalDependentTrait], {});
+    expect(result).toEqual([]);
+  });
+
+  it("should include traits that are activated", () => {
+    const result = normalizeTraits([optionalDependentTrait], {
+      activate: true,
+    });
+    expect(result).toEqual([optionalTrait, optionalDependentTrait]);
   });
 });

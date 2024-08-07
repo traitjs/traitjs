@@ -8,9 +8,13 @@ const dependenciesCount = (trait: ITrait<any>): number =>
   (trait.dependsOn?.reduce((acc, trait) => acc + dependenciesCount(trait), 0) ??
     0);
 
-export const normalizeTraits = <TOptions>(traits: ITrait<TOptions>[]) => {
+export const normalizeTraits = <TOptions>(
+  traits: ITrait<TOptions>[],
+  options: TOptions
+) => {
   const treatedTraits = traits
-    .concat(traits.flatMap((trait) => depthDependencies(trait)))
+    .filter((trait) => !trait.activator || trait.activator(options))
+    .flatMap((trait) => [trait, ...depthDependencies(trait)])
     .filter(
       (trait, index, self) =>
         self.findIndex((x) => x.uniqueId === trait.uniqueId) === index

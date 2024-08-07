@@ -8,6 +8,6 @@ export const applyTraits = <TTarget extends Type<any>, TOptions>(
   traits: ITrait<TOptions>[],
   options: TOptions
 ) => {
-  const normalizedTraits = normalizeTraits(traits);
+  const normalizedTraits = normalizeTraits(traits, options);
   return resolveTraits(target, normalizedTraits, options);
 };

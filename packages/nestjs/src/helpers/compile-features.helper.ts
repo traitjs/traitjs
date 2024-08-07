@@ -1,6 +1,6 @@
-import { ITrait, compileTraits } from "@traitjs/core";
-import { IFeature } from "../types/i-feature.type";
+import { compileTraits } from "@traitjs/core";
 import { IFeatureResult } from "../types/i-feature-result.type";
+import { IFeature } from "../types/i-feature.type";
 import { IGroupedFeatures } from "../types/i-grouped-features.type";
 import { IProvideFeatureAs } from "../types/i-provide-feature-as";
 import { featureEntries, groupedFeaturesEntries } from "./entries.helper";
@@ -17,7 +17,7 @@ export const compileFeatures = <
 ): IFeatureResult<TFeature> => {
   const traits = features.reduce(
     (acc, feature) => {
-      featureEntries(feature)
+      featureEntries<TOptions, TKey, TFeature>(feature)
         .filter(([key]) => !ignoreTraits?.includes(key))
         .forEach(([key, value]) => {
           if (!value) return;

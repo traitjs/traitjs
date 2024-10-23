@@ -9,28 +9,29 @@ export interface ListFilesOptions {
 }
 
 const fullExtname = (filePath: string): string =>
-  `.${filePath.split(".").slice(1).join(".")}` ?? "";
+  `.${filePath.split(".").slice(1).join(".")}`;
 
 export const listFiles = (
   dirName: string,
-  options?: ListFilesOptions
-): string[] =>
+  options?: ListFilesOptions,
+  depth: number = 0
+): [string, number][] =>
   fs
     .readdirSync(dirName, { withFileTypes: true })
-    .flatMap((e) => {
+    .flatMap<[string, number]>((e) => {
       const filePath = path.join(dirName, e.name);
       if (e.isDirectory()) {
         if (!options?.recursive) return [];
         if (!(options?.directoryWhitelist?.includes(e.name) ?? true)) return [];
         if (options?.directoryBlacklist?.includes(e.name)) return [];
 
-        return listFiles(filePath, options);
+        return listFiles(filePath, options, depth + 1);
       } else {
-        return filePath;
+        return [filePath, depth];
       }
     })
     .filter(
-      (x) =>
+      ([x]) =>
         !options?.allowedExtensions ||
         options.allowedExtensions.includes(fullExtname(x))
     );

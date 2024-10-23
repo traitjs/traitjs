@@ -8,6 +8,11 @@ export interface ListFilesOptions {
   recursive?: boolean;
 }
 
+export interface FileAddr {
+  filePath: string;
+  depth: number;
+}
+
 const fullExtname = (filePath: string): string =>
   `.${filePath.split(".").slice(1).join(".")}`;
 
@@ -15,10 +20,10 @@ export const listFiles = (
   dirName: string,
   options?: ListFilesOptions,
   depth: number = 0
-): [string, number][] =>
+): FileAddr[] =>
   fs
     .readdirSync(dirName, { withFileTypes: true })
-    .flatMap<[string, number]>((e) => {
+    .flatMap<FileAddr>((e) => {
       const filePath = path.join(dirName, e.name);
       if (e.isDirectory()) {
         if (!options?.recursive) return [];
@@ -27,11 +32,11 @@ export const listFiles = (
 
         return listFiles(filePath, options, depth + 1);
       } else {
-        return [filePath, depth];
+        return { filePath, depth };
       }
     })
     .filter(
-      ([x]) =>
+      ({ filePath }) =>
         !options?.allowedExtensions ||
-        options.allowedExtensions.includes(fullExtname(x))
+        options.allowedExtensions.includes(fullExtname(filePath))
     );

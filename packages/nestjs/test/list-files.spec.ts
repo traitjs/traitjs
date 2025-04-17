@@ -24,7 +24,7 @@ describe("listFiles", () => {
 
   it("should return an array of files in a directory", () => {
     const files = listFiles(testDir, { recursive: false });
-    expect(files).toEqual([
+    expect(files.map((x) => x.filePath)).toEqual([
       path.join(testDir, "file1.ts"),
       path.join(testDir, "file2.js"),
     ]);
@@ -32,7 +32,7 @@ describe("listFiles", () => {
 
   it("should return an array of files in a directory and its subdirectories when recursive is set to true", () => {
     const files = listFiles(testDir, { recursive: true });
-    expect(files).toEqual([
+    expect(files.map((x) => x.filePath)).toEqual([
       path.join(testDir, "file1.ts"),
       path.join(testDir, "file2.js"),
       path.join(testDir, "subDir", "file3.ts"),
@@ -42,7 +42,7 @@ describe("listFiles", () => {
 
   it("should return an array of files only in the current directory when recursive is set to false", () => {
     const files = listFiles(testDir, { recursive: false });
-    expect(files).toEqual([
+    expect(files.map((x) => x.filePath)).toEqual([
       path.join(testDir, "file1.ts"),
       path.join(testDir, "file2.js"),
     ]);
@@ -53,7 +53,7 @@ describe("listFiles", () => {
       allowedExtensions: [".ts"],
       recursive: true,
     });
-    expect(files).toEqual([
+    expect(files.map((x) => x.filePath)).toEqual([
       path.join(testDir, "file1.ts"),
       path.join(testDir, "subDir", "file3.ts"),
       path.join(testDir, "subDir2", "file4.ts"),
@@ -65,7 +65,7 @@ describe("listFiles", () => {
       directoryBlacklist: ["subDir"],
       recursive: true,
     });
-    expect(files).toEqual([
+    expect(files.map((x) => x.filePath)).toEqual([
       path.join(testDir, "file1.ts"),
       path.join(testDir, "file2.js"),
       path.join(testDir, "subDir2", "file4.ts"),
@@ -77,7 +77,7 @@ describe("listFiles", () => {
       directoryWhitelist: ["subDir"],
       recursive: true,
     });
-    expect(files).toEqual([
+    expect(files.map((x) => x.filePath)).toEqual([
       path.join(testDir, "file1.ts"),
       path.join(testDir, "file2.js"),
       path.join(testDir, "subDir", "file3.ts"),

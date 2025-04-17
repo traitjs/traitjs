@@ -5,16 +5,31 @@ import { IGroupedFeatures } from "../types/i-grouped-features.type";
 import { IProvideFeatureAs } from "../types/i-provide-feature-as";
 import { featureEntries, groupedFeaturesEntries } from "./entries.helper";
 
+export interface ICompileFeaturesArgs<
+  TOptions extends any,
+  TKey extends string,
+  TFeature extends IFeature<TOptions, TKey>,
+> {
+  features: TFeature[];
+  options: TOptions;
+  ignoreTraits?: Array<keyof TFeature>;
+  provideFeatureAs?: IProvideFeatureAs<TOptions, TFeature>;
+}
+
 export const compileFeatures = <
   TOptions extends any,
   TKey extends string,
   TFeature extends IFeature<TOptions, TKey>,
->(
-  provideFeatureAs: IProvideFeatureAs<TOptions, TFeature>,
-  features: TFeature[],
-  options: TOptions,
-  ignoreTraits?: Array<keyof TFeature>
-): IFeatureResult<TFeature> => {
+>({
+  provideFeatureAs,
+  features,
+  options,
+  ignoreTraits,
+}: ICompileFeaturesArgs<
+  TOptions,
+  TKey,
+  TFeature
+>): IFeatureResult<TFeature> => {
   const traits = features.reduce(
     (acc, feature) => {
       featureEntries<TOptions, TKey, TFeature>(feature)
@@ -31,9 +46,10 @@ export const compileFeatures = <
     {} as IGroupedFeatures<TOptions, TFeature>
   );
   return groupedFeaturesEntries(traits).reduce((acc, [key, value]) => {
+    const useClass = compileTraits(value, options);
     acc[key] = {
-      provide: provideFeatureAs[key]?.(options),
-      useClass: compileTraits(value, options),
+      provide: provideFeatureAs?.[key]?.(options) ?? useClass.name,
+      useClass,
     };
     return acc;
   }, {} as IFeatureResult<TFeature>);

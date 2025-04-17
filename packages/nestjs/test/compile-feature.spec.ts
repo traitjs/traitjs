@@ -52,12 +52,12 @@ describe("compileFeatures", () => {
   });
 
   it("should return an object", () => {
-    const result = compileFeatures(provideFeatureAs, features, options);
+    const result = compileFeatures({ provideFeatureAs, features, options });
     expect(typeof result).toBe("object");
   });
 
   it("should correctly compile features and options into a result object", () => {
-    const result = compileFeatures(provideFeatureAs, features, options);
+    const result = compileFeatures({ provideFeatureAs, features, options });
 
     expect(result).toHaveProperty("key1");
     expect(result.key1).toHaveProperty("provide");

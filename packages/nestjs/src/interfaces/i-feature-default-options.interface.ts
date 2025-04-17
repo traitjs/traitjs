@@ -11,7 +11,7 @@ export interface IFeatureDefaultOptions<
 > {
   features?: TFeature[];
   options?: Partial<TOptions>;
-  provideFeatureAs: IProvideFeatureAs<TOptions, TFeature>;
+  provideFeatureAs?: IProvideFeatureAs<TOptions, TFeature>;
   controllers?: Array<keyof TFeature>;
   providers?: Array<keyof TFeature>;
   exports?: Array<keyof TFeature>;

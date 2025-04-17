@@ -4,5 +4,5 @@ export type IProvideFeatureAs<
   TOptions extends any,
   TFeature extends IFeature<TOptions>,
 > = {
-  [key in keyof TFeature]: (options: TOptions) => string;
+  [key in keyof TFeature]?: (options: TOptions) => string;
 };

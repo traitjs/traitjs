@@ -10,16 +10,14 @@ export const makeActivator = <
   if (!dependsOn) {
     return activator;
   }
-  if (!activator) {
-    return (options: TOptions): boolean =>
-      dependsOn.reduce(
-        (acc, trait) => acc && (!trait.activator || trait.activator(options)),
-        true
-      );
-  }
-  return (options: TOptions): boolean =>
+  const defaultActivator = (options: TOptions): boolean =>
     dependsOn.reduce(
       (acc, trait) => acc && (!trait.activator || trait.activator(options)),
       true
-    ) && activator(options);
+    );
+  if (!activator) {
+    return defaultActivator;
+  }
+  return (options: TOptions): boolean =>
+    defaultActivator(options) && activator(options);
 };

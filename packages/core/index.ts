@@ -8,5 +8,5 @@ export * from "./src/interfaces/i-trait.interface";
 export * from "./src/types/infer-trait-fn.type";
 export * from "./src/types/infer-trait-fn.type";
 export * from "./src/types/abstract-type.type";
-export * from "./src/types/trait-union.type";
+export * from "./src/types/trait-intersection.type";
 export * from "./src/types/type.type";

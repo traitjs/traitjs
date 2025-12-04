@@ -1,17 +1,21 @@
 import { ITrait } from "../interfaces/i-trait.interface";
 import { AbstractType } from "./abstract-type.type";
-import { TraitUnionType } from "./trait-union.type";
+import { TraitIntersectionType, TraitType } from "./trait-intersection.type";
 import { Type } from "./type.type";
+
+type ConstructorOf<T> = new (...args: any[]) => T;
 
 export type InferTraitFnType<
   TOptions,
   TResult extends Type<any> | AbstractType<any>,
-  F extends Array<ITrait<TOptions>> | [],
-> = F extends []
-  ? <TExpected extends any = any>(
-      target: Type<TExpected> | undefined,
-      options: TOptions
-    ) => TResult
-  : F extends Array<ITrait<TOptions>>
-    ? (target: TraitUnionType<F>, options: TOptions) => TResult
-    : never;
+  TDependsOn extends Array<ITrait<TOptions>> | [],
+> = TDependsOn extends []
+  ? (target: undefined, options: TOptions) => TResult
+  : TDependsOn extends [ITrait<TOptions>]
+    ? (target: TraitType<TDependsOn[0]>, options: TOptions) => TResult
+    : TDependsOn extends Array<ITrait<TOptions>>
+      ? (
+          target: ConstructorOf<TraitIntersectionType<TDependsOn>>,
+          options: TOptions
+        ) => TResult
+      : never;
